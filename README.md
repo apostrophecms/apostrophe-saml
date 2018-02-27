@@ -2,7 +2,7 @@
 
 `apostrophe-saml` provides single sign-on with identity providers based on SAML or Shibboleth. Shibboleth is very common in academic environments and is built on top of SAML, which is common in corporate environments.
 
-> This module is separate from [apostrophe-passport](https://npmjs.org/package/apostrophe-passport) because that module makes assumptions that are not a good fit for SAML and Shibboleth. It works better with OpenAuth identity providers like Google, Facebook, etc.
+> This module is separate from [apostrophe-passport](https://npmjs.org/package/apostrophe-passport) because that module makes assumptions that are not a good fit for SAML and Shibboleth. That module works better with OpenAuth identity providers like Google, Facebook, etc.
 
 ## Installation
 

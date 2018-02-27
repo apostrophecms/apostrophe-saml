@@ -47,7 +47,7 @@ module.exports = {
       self.apos.login.passport.use(strategy);
     };
 
-    self.generateMetadata = function() {x
+    self.generateMetadata = function() {
       var confFolder = _.last(self.__meta.chain).dirname;
       var metadata = self.strategy.generateServiceProviderMetadata(fs.readFileSync(confFolder + '/our.cer', 'utf8'));
       fs.writeFileSync(self.apos.rootDir + '/public/' + require('path').basename(self.getIssuer()), metadata);
