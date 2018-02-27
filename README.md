@@ -64,12 +64,13 @@ openssl req -new -x509 -days 365 -nodes -sha256 -out lib/modules/apostrophe-saml
 
 Note that the files are written to `lib/modules/apostrophe-saml/our.cer` and `lib/modules/apostrophe-saml/our.key`. Apostrophe will automatically look in these locations.
 
-> **PUT THE EXPIRATION DATE OF YOUR CERTIFICATE IN YOUR CALENDAR! The default is TWO YEARS.** > After that point you MUST generate a new certificate, provide the new metadata to your
-> identity provider and redeploy, or logins will STOP WORKING. Consider using `openssl`
-> options to create a longer-lived certificate. Your identity provider may place limits
-> on this.
->
-> **YOU MUST NEVER, EVER, EVER ADD `our.key` TO A PUBLIC GIT REPOSITORY.** It is reasonable to add it to a private repository.
+**PUT THE EXPIRATION DATE OF YOUR CERTIFICATE IN YOUR CALENDAR! The default is TWO YEARS.**
+After that point you MUST generate a new certificate, provide the new metadata to your
+identity provider and redeploy, or logins will STOP WORKING. Consider using `openssl`
+options to create a longer-lived certificate. Your identity provider may place limits
+on this.
+
+**YOU MUST NEVER, EVER, EVER ADD `our.key` TO A PUBLIC GIT REPOSITORY.** It is reasonable to add it to a private repository.
 
 ## Installing the identity provider's metadata
 
