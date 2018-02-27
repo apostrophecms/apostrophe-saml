@@ -1,0 +1,28 @@
+{
+  "name": "apostrophe-saml",
+  "version": "2.0.0",
+  "description": "Single sign-on for the Apostrophe CMS via SAML or Shibboleth",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apostrophecms/apostrophe-saml.git"
+  },
+  "keywords": [
+    "saml",
+    "shibboleth",
+    "apostrophecms",
+    "apostrophe",
+    "sso",
+    "single",
+    "sign-on"
+  ],
+  "author": "P'unk Avenue LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/apostrophecms/apostrophe-saml/issues"
+  },
+  "homepage": "https://github.com/apostrophecms/apostrophe-saml#readme"
+}
