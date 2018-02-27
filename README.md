@@ -59,12 +59,17 @@ We need a self-signed key and certificate. These are used for SAML assertions, t
 mkdir -p lib/modules/apostrophe-saml
 openssl req -new -x509 -days 365 -nodes -sha256 -out lib/modules/apostrophe-saml/our.cer -keyout lib/modules/apostrophe-saml/our.key`
 ```
-
+\
 *You must use SHA256 as shown here.*
 
 Note that the files are written to `lib/modules/apostrophe-saml/our.cer` and `lib/modules/apostrophe-saml/our.key`. Apostrophe will automatically look in these locations.
 
-> **HEY! YOU MUST NEVER, EVER, EVER ADD `our.key` TO A PUBLIC GIT REPOSITORY.** It is reasonable to add it to a private repository.
+> **PUT THE EXPIRATION DATE OF YOUR CERTIFICATE IN YOUR CALENDAR! The default is TWO YEARS.** > After that point you MUST generate a new certificate, provide the new metadata to your
+> identity provider and redeploy, or logins will STOP WORKING. Consider using `openssl`
+> options to create a longer-lived certificate. Your identity provider may place limits
+> on this.
+>
+> **YOU MUST NEVER, EVER, EVER ADD `our.key` TO A PUBLIC GIT REPOSITORY.** It is reasonable to add it to a private repository.
 
 ## Installing the identity provider's metadata
 
@@ -149,3 +154,7 @@ You can set your own policy for rejecting users by passing an `accept` function 
 "What about redirecting `/login` to Shibboleth?"
 
 You can do that. Once the login page is gone, it's possible for you to decide what happens at that URL. Use the [apostrophe-redirects](https://npmjs.org/package/apostrophe-redirects) module to set it up through a nice UI, or add an Express route and a redirect in your own code.
+
+## Changelog
+
+2.0.0: initial release.
