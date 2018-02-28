@@ -158,9 +158,11 @@ You can do that. Once the login page is gone, it's possible for you to decide wh
 
 ## Changelog
 
-2.0.1:
+### 2.0.1
 
 * Default callback URL in metadata did not match default callback path, which forced explicit configuration of callback URL. Explicit configuration still works, but now you can also accept the default successfully.
 * More docs.
 
-2.0.0: initial release.
+### 2.0.0
+
+Initial release.

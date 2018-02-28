@@ -14,6 +14,19 @@ module.exports = {
     return self.ensureGroup(callback);
   },
 
+  beforeConstruct: function(self, options) {
+    options.attributeMapping = options.attributeMapping || {
+      'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'username', // eduPersonPrincipalName
+      'urn:oid:0.9.2342.19200300.100.1.3': 'email',
+      'urn:oid:2.5.4.4': 'lastName',
+      'urn:oid:2.5.4.42': 'firstName',
+      // commonName. Not always available
+      'urn:oid:2.5.4.3': 'title',
+      // Last, First
+      'urn:oid:2.16.840.1.113730.3.1.241': 'displayName'
+    }
+  },
+
   construct: function(self, options) {
 
     self.enablePassportStrategy = function() {
@@ -122,11 +135,11 @@ module.exports = {
       if (typeof(options.match) === 'function') {
         criteria = options.match(profile);
       } else {
-        if (!profile.email) {
-          // User has no email
+        if (!profile.username) {
+          // User has no username
           return callback(null, false);
         }
-        criteria.email = profile.email;
+        criteria.username = profile.username;
       }
       criteria.disabled = { $ne: true };
       return self.apos.users.find(req, criteria).toObject(function(err, user) {
@@ -134,16 +147,24 @@ module.exports = {
           return callback(err);
         }
         if (user) {
-          return callback(null, user);
+          return self.updateUser(user, profile, function(err) {
+            if (err) {
+              // Typically a duplicate key, not surprising with
+              // email address duplication possibilities, treat it as a
+              // login error
+              return callback(null, false);
+            }
+            return callback(null, user);
+          });
         }
         if (!self.options.create) {
           return callback(null, false);
         }
         return self.createUser(profile, function(err, user) {
           if (err) {
-            // Typically a duplicate key, not surprising with username and
-            // email address duplication possibilities when we're matching
-            // on the other field, treat it as a login error
+            // Typically a duplicate key, not surprising with
+            // email address duplication possibilities, treat it as a
+            // login error
             return callback(null, false);
           }
           return callback(null, user);
@@ -152,22 +173,23 @@ module.exports = {
     };
 
     // You might need to override this method at project level if
-    // the profile provided by your SAML provider is different.
+    // the profile provided by your SAML provider has very
+    // different attributes.
+    //
     // This method works well for Shibboleth at UPenn.
+    //
+    // All attributes present are set and, later, updated
+    // on users as they log in.
 
     self.adjustProfile = function(profile) {
-      // pennkey id (eduPersonPrincipalName) is effectively both email and username
-      var finalProfile = {
-        email: profile['urn:oid:1.3.6.1.4.1.5923.1.1.1.6'],
-        username: profile['urn:oid:1.3.6.1.4.1.5923.1.1.1.6'],
-        surname: profile['urn:oid:2.5.4.4'],
-        givenName: profile['urn:oid:2.5.4.42'],
-        displayName: profile['urn:oid:2.16.840.1.113730.3.1.241'],
-      };
-      finalProfile.surname = finalProfile.surname || finalProfile.username.replace(/@.*$/, '');
-      finalProfile.givenName = finalProfile.givenName || '';
+      var finalProfile = {};
+      _.each(self.options.attributeMapping, function(val, key) {
+        finalProfile[val] = profile[key];
+      });
+      finalProfile.firstName = finalProfile.firstName || '';
+      finalProfile.lastName = finalProfile.lastName || finalProfile.username.replace(/@.*$/, '');
       finalProfile.displayName = finalProfile.displayName || finalProfile.username;
-      finalProfile.commonName = (finalProfile.givenName + ' ' + finalProfile.surname).trim();
+      finalProfile.title = finalProfile.title || (finalProfile.firstName + ' ' + finalProfile.lastName).trim();
       return finalProfile;
     };
     
@@ -177,27 +199,34 @@ module.exports = {
 
     self.createUser = function(profile, callback) {
       var user = self.apos.users.newInstance();
-      user.title = profile.commonName;
-      if (!profile.email) {
-        return callback('No email in profile, cannot set username');
+      if (!profile.username) {
+        return callback('No username in profile, cannot set username');
       }
-      user.email = profile.email;
-      user.username = profile.email;
-      user.firstName = profile.givenName;
-      if (profile.middleName) {
-        user.firstName += ' ' + profile.middleName;
-      }
-      user.lastName = profile.surName;
+      self.mergeProfile(profile, user);
       var req = self.apos.tasks.getReq();
       if (self.createGroup) {
         user.groupIds = [ self.createGroup._id ];
       }
-      if (options.import) {
-        // Allow for specialized import of more fields
-        options.import(profile, user);
-      }
       return self.apos.users.insert(req, user, function(err) {
         return callback(err, user);
+      });
+    };
+
+    self.updateUser = function(user, profile, callback) {
+      self.mergeProfile(profile, user);
+      var req = self.apos.tasks.getReq();
+      return self.apos.users.update(req, user, function(err) {
+        return callback(err, user);
+      });
+    };
+
+    self.mergeProfile = function(profile, user) {
+      _.each(profile, function(val, key) {
+        // Do not clobber email entered in Apostrophe just because
+        // none was defined in the profile
+        if (val !== undefined) {
+          user[key] = val;
+        }
       });
     };
 
