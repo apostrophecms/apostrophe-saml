@@ -34,6 +34,10 @@ npm install apostrophe-saml
           permissions: [ 'admin' ]
         }
       },
+      // OPTIONAL
+      // attributeMapping: {
+      //   [see below]
+      // },
       // This is the default issuer name sent to the identity provider.
       //
       // Must be a unique identifier, usually a URL much like this one.
@@ -98,14 +102,27 @@ Create a link to the relative path `/auth/saml/login` for them.
 
 That's all there is to it. When a user reaches this URL they are redirected to begin the authorization process with the identity provider.
 
-## What if logins don't work?
+## Attribute mapping
 
-* Make sure you generated the key and certificate and installed them to the right place.
-* Make sure you installed the identity provider's metadata.
-* Make sure you sent them your metadata and they received it and installed it.
-* Make sure you didn't change your callback URL or any other setting from what you initially told your identity provider to expect.
+By default, this module looks for SAML2 profile attributes that are common in Shibboleth configurations found in academia. If your identity provider offers different attributes, you may need to create a custom attribute mapping.
 
-If you have checked all of the above and it still doesn't work, it is possible that your identity provider doesn't offer the same profile information as the partners we have worked with, or requires things they do not. It may be time to contribute a pull request to this module to make it more flexible.
+The default value of the `attributeMapping` option is below. You can change this to map any set of profile properties to any set of Apostrophe user properties. Keep in mind that `title` should be the user's full name and `username` should be populated with the best unique identifier available in the profile.
+
+```javascript
+{
+  // eduPersonPrincipalName. In education this is the best
+  // unique identifier typically available
+  'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'username', 
+  // Often not available
+  'urn:oid:0.9.2342.19200300.100.1.3': 'email',
+  'urn:oid:2.5.4.4': 'lastName',
+  'urn:oid:2.5.4.42': 'firstName',
+  // commonName. Not always available
+  'urn:oid:2.5.4.3': 'title',
+  // Last, First
+  'urn:oid:2.16.840.1.113730.3.1.241': 'displayName'
+}
+```
 
 ## Creating users on the fly
 
@@ -132,31 +149,49 @@ By default, users are not created if they don't already exist on the site. If th
 
 A common question at this point. See [managing permissions in Apostrophe](http://apostrophecms.org/docs/tutorials/intermediate/permissions.html).
 
-## Beefing up the "create" option: copying extra properties
+## What if a unique identifier (such as `eduPersonPrincipalName`) changes?
 
-The "create" option shown above will create a user with minimal information: first name, last name, full name, username, and email address (where available).
-
-If you wish to import other fields from the profile object provided by the passport strategy, add an `import` function to your options to the module. The `import` function receives `(profile, user)` and may copy properties from `profile` to `user` as it sees fit. 
-
-## What if an email address (eduPersonPrincipalName) changes?
-
-Since this is usually the only identifier available, this could result in a duplicate account with the `create` option. The best advice we can give is to be aware and migrate control of content if needed. Or, you can provide a `match` option.
+This can happen when users change their identity in the system due to a change of last name or similar. Since this is usually the only identifier available, this could result in a duplicate account with the `create` option. The best advice we can give is to be aware and migrate control of content if needed. 
 
 ### A `match` function of your choice
 
-If you provide a function, it will receive the user's profile from the passport strategy, and must return a MongoDB criteria object matching the appropriate user. Do not worry about checking the `disabled` or `type` properties, Apostrophe will handle that.
+If you provide a function as the `match` option, it will receive the user's profile from the passport strategy, and must return a MongoDB criteria object matching the appropriate user. This is a substitute for the automatic comparison to `username`. Do not worry about checking the `disabled` or `type` properties, Apostrophe will handle that.
 
 ## Rejecting users for your own reasons
 
-You can set your own policy for rejecting users by passing an `accept` function as an option. This function takes the `profile` object provided by the passport strategy and must return `true` otherwise the user is not permitted to log in.
+You can set your own policy for rejecting users by passing an `accept` function as an option. This function takes the `profile` object, after it has been mapped via `attributeMapping` and the `adjustProfile` method, and must return `true` if the user should be allowed to log in.
 
-## Frequently Asked Questions
+## What about redirecting `/login` to the module?
 
-"What about redirecting `/login` to Shibboleth?"
+You can do that. Once the login page is gone, it's possible for you to decide what happens at the `/login` URL. Use the [apostrophe-redirects](https://npmjs.org/package/apostrophe-redirects) module to set it up through a nice UI, or add an Express route and a redirect in your own code.
 
-You can do that. Once the login page is gone, it's possible for you to decide what happens at that URL. Use the [apostrophe-redirects](https://npmjs.org/package/apostrophe-redirects) module to set it up through a nice UI, or add an Express route and a redirect in your own code.
+First turn off ordinary local logins:
+
+```javascript
+    'apostrophe-login': {
+      // OPTIONAL: disable regular site logins completely
+      localLogin: false
+    }
+```
+
+## What if logins don't work?
+
+* Make sure the user actually exists in Apostrophe, with a `username` matching the unique identifier you've mapped to `username` (see above). Or, see "creating users on the fly," below.
+* Make sure you generated the key and certificate and installed them to the right place.
+* Make sure you installed the identity provider's metadata.
+* Make sure you sent them your metadata and they received it and installed it.
+* Make sure you didn't change your callback URL or any other setting from what you initially told your identity provider to expect.
+* Make sure the profile data provided by your identity provider includes the property you are mapping to `username`, above.
+
+If you have checked all of the above and it still doesn't work, you might need to do some custom massage on the profile object. You can extend or override the `adjustProfile` method of this module as you normally would when extending Apostrophe; see the source for more information.
 
 ## Changelog
+
+### 2.1.0
+
+* This module incorrectly assumed that the `eduPersonPrincipalName` is the user's email address. That is not the case. Although it looks like an email address it is much closer to a domain-scoped username. We now map this field to the `username` (by default), and touch `email` only if it is provided as a separate field in the profile as determined by the `attributeMapping`.
+* The `attributeMapping` method was added. This can be used to assign `username` from a different property, as well as mapping other attributes.
+* Existing users are updated at login time with the latest values of their mapped attributes.
 
 ### 2.0.1
 
