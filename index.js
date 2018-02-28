@@ -36,7 +36,7 @@ module.exports = {
       config.identifierFormat = null;
       // passport-saml uses entryPoint, not identityProviderUrl
       config.entryPoint = config.identityProviderUrl;  
-      config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/callback');
+      config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
 
       var strategy = new passportSaml.Strategy(
         config,
