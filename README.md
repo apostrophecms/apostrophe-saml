@@ -38,7 +38,7 @@ npm install apostrophe-saml
       //
       // Must be a unique identifier, usually a URL much like this one.
       // Usually by prior agreement with your identity provider.
-      issuer: 'https://example.com/metadata.xml',
+      issuer: 'https://example.com/saml-metadata.xml',
       // This is the default. NOTE: changing this without telling
       // your identity provider may result in mysterious failed logins.
       // Make sure they are on board with what this URL has been set to
@@ -57,18 +57,18 @@ We need a self-signed key and certificate. These are used for SAML assertions, t
 
 ```
 mkdir -p lib/modules/apostrophe-saml
-openssl req -new -x509 -days 365 -nodes -sha256 -out lib/modules/apostrophe-saml/our.cer -keyout lib/modules/apostrophe-saml/our.key`
+openssl req -new -x509 -days 365 -nodes -sha256 -out lib/modules/apostrophe-saml/our.cer -keyout lib/modules/apostrophe-saml/our.key -days 3650
 ```
-\
+
 *You must use SHA256 as shown here.*
+
+Versions of openssl may differ a bit. If yours doesn't like the `-days` option, or your identity provider doesn't like a 10-year certificate, you can just use the default lifetime (usually 2 years).
 
 Note that the files are written to `lib/modules/apostrophe-saml/our.cer` and `lib/modules/apostrophe-saml/our.key`. Apostrophe will automatically look in these locations.
 
 **PUT THE EXPIRATION DATE OF YOUR CERTIFICATE IN YOUR CALENDAR! The default is TWO YEARS.**
 After that point you MUST generate a new certificate, provide the new metadata to your
-identity provider and redeploy, or logins will STOP WORKING. Consider using `openssl`
-options to create a longer-lived certificate. Your identity provider may place limits
-on this.
+identity provider and redeploy, or logins will STOP WORKING.
 
 **YOU MUST NEVER, EVER, EVER ADD `our.key` TO A PUBLIC GIT REPOSITORY.** It is reasonable to add it to a private repository.
 
