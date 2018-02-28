@@ -141,12 +141,14 @@ module.exports = {
         }
         criteria.username = profile.username;
       }
-      criteria.disabled = { $ne: true };
       return self.apos.users.find(req, criteria).toObject(function(err, user) {
         if (err) {
           return callback(err);
         }
         if (user) {
+          if (user.disabled) {
+            return callback('login disabled', false);
+          }
           return self.updateUser(user, profile, function(err) {
             if (err) {
               // Typically a duplicate key, not surprising with
