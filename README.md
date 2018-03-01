@@ -161,18 +161,24 @@ If you provide a function as the `match` option, it will receive the user's prof
 
 You can set your own policy for rejecting users by passing an `accept` function as an option. This function takes the `profile` object, after it has been mapped via `attributeMapping` and the `adjustProfile` method, and must return `true` if the user should be allowed to log in.
 
-## What about redirecting `/login` to the module?
+## What about logging in at `/login` for familiarity?
 
-You can do that. Once the login page is gone, it's possible for you to decide what happens at the `/login` URL. Use the [apostrophe-redirects](https://npmjs.org/package/apostrophe-redirects) module to set it up through a nice UI, or add an Express route and a redirect in your own code.
+Sure. Just set the `loginUrl` option to `/login`.
 
-First turn off ordinary local logins:
+However, in addition, you must disable ordinary local logins:
 
 ```javascript
+    'apostrophe-saml': {
+      // other options, then...
+      loginUrl: '/login'
+    },
     'apostrophe-login': {
       // OPTIONAL: disable regular site logins completely
       localLogin: false
     }
 ```
+
+> Tip: you will probably want to do this only in `data/local.js` on your production and possibly staging servers, so local login remains possible in your dev environment, where you probably don't have a hostname that is registered with the identity provider for SAML login.
 
 ## What if logins don't work?
 
@@ -186,6 +192,10 @@ First turn off ordinary local logins:
 If you have checked all of the above and it still doesn't work, you might need to do some custom massage on the profile object. You can extend or override the `adjustProfile` method of this module as you normally would when extending Apostrophe; see the source for more information.
 
 ## Changelog
+
+### 2.1.1
+
+* Documentation on a better way to switch `/login` to point to this module. No code changes.
 
 ### 2.1.0
 
