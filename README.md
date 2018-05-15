@@ -14,15 +14,15 @@ npm install apostrophe-saml
 
 ```javascript
   // in app.js
-
+  
   // The base URL of YOUR SITE.
   //
   // YOU MUST CONFIGURE baseUrl for this site. And in most cases your
   // identity provider won't play unless it is the URL you told them to
   // expect, which nearly always must use `https`
-
+  
   baseUrl: 'https://example.com',
-
+  
   modules: {
     'apostrophe-saml': {
       // OPTIONAL: create users if they do not already exist.
@@ -112,7 +112,7 @@ The default value of the `attributeMapping` option is below. You can change this
 {
   // eduPersonPrincipalName. In education this is the best
   // unique identifier typically available
-  'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'username',
+  'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'username', 
   // Often not available
   'urn:oid:0.9.2342.19200300.100.1.3': 'email',
   'urn:oid:2.5.4.4': 'lastName',
@@ -151,7 +151,7 @@ A common question at this point. See [managing permissions in Apostrophe](http:/
 
 ## What if a unique identifier (such as `eduPersonPrincipalName`) changes?
 
-This can happen when users change their identity in the system due to a change of last name or similar. Since this is usually the only identifier available, this could result in a duplicate account with the `create` option. The best advice we can give is to be aware and migrate control of content if needed.
+This can happen when users change their identity in the system due to a change of last name or similar. Since this is usually the only identifier available, this could result in a duplicate account with the `create` option. The best advice we can give is to be aware and migrate control of content if needed. 
 
 ### A `match` function of your choice
 
