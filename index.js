@@ -48,7 +48,7 @@ module.exports = {
       // Without this it looks for emailAddress, which is not available
       config.identifierFormat = null;
       // passport-saml uses entryPoint, not identityProviderUrl
-      config.entryPoint = config.identityProviderUrl;  
+      config.entryPoint = config.identityProviderUrl;
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
 
       var strategy = new passportSaml.Strategy(
@@ -56,7 +56,7 @@ module.exports = {
         self.profileCallback
       );
       self.strategy = strategy;
-      
+
       self.apos.login.passport.use(strategy);
     };
 
@@ -118,20 +118,20 @@ module.exports = {
         }
       );
     };
-      
+
     self.profileCallback = function(profile, callback) {
 
       profile = self.adjustProfile(profile);
 
       var req = self.apos.tasks.getReq();
       var criteria = {};
-      
+
       if (options.accept) {
         if (!options.accept(profile)) {
           return callback(null, false);
         }
-      }     
-      
+      }
+
       if (typeof(options.match) === 'function') {
         criteria = options.match(profile);
       } else {
@@ -194,7 +194,7 @@ module.exports = {
       finalProfile.title = finalProfile.title || (finalProfile.firstName + ' ' + finalProfile.lastName).trim();
       return finalProfile;
     };
-    
+
     // Create a new user based on a profile. This occurs only
     // if the "create" option is set and a user arrives who has
     // a valid passport profile but does not exist in the local database.
@@ -238,7 +238,7 @@ module.exports = {
     // Ensure the existence of an apostrophe-group for newly
     // created users, as configured via the `group` subproperty
     // of the `create` option.
-    
+
     self.ensureGroup = function(callback) {
       if (!(self.options.create && self.options.create.group)) {
         return setImmediate(callback);
