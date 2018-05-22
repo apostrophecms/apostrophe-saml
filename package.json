@@ -1,6 +1,6 @@
 {
   "name": "apostrophe-saml",
-  "version": "2.1.1",
+  "version": "2.2.1",
   "description": "Single sign-on for the Apostrophe CMS via SAML or Shibboleth",
   "main": "index.js",
   "scripts": {
