@@ -224,9 +224,12 @@ module.exports = {
 
     self.mergeProfile = function(profile, user) {
       _.each(profile, function(val, key) {
+        // Check if a property should not be updated from an existing value.
+        var excludeKey = _.includes(options.avoidOverride, key) && (user[key] !== undefined);
+
         // Do not clobber email entered in Apostrophe just because
         // none was defined in the profile
-        if (val !== undefined) {
+        if ((val !== undefined) && !excludeKey) {
           user[key] = val;
         }
       });

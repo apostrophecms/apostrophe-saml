@@ -145,6 +145,18 @@ By default, users are not created if they don't already exist on the site. If th
 
 "Do I have to pre-create the group users will be added to?" No, it will be created for you. Also, if you supply a `permissions` property, it will always be refreshed to those permissions at restart. You might consider leaving that property off and manually setting the permissions via the groups editor.
 
+## Disabling field updates
+
+To prevent specific fields in the CMS database from being overwritten by the external data, add those fields to an `avoidOverride` array in the options. These fields will be populated if they were previously empty, but if a value already exists they'll not be updated.
+
+For example, to disable updates of name fields, that might look like:
+
+```javascript
+'apostrophe-saml': {
+  avoidOverride: ['firstName', 'lastName']
+}
+```
+
 ## Wait, how do permissions in Apostrophe work again?
 
 A common question at this point. See [managing permissions in Apostrophe](http://apostrophecms.org/docs/tutorials/intermediate/permissions.html).
