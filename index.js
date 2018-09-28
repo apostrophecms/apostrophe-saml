@@ -50,6 +50,8 @@ module.exports = {
       // passport-saml uses entryPoint, not identityProviderUrl
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
+      // configure passport-saml to disable the default authentication context
+      config.disableRequestedAuthnContext = options.disableRequestedAuthnContext;
 
       var strategy = new passportSaml.Strategy(
         config,
