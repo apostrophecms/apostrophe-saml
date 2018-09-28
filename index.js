@@ -50,9 +50,10 @@ module.exports = {
       // passport-saml uses entryPoint, not identityProviderUrl
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
-      // configure passport-saml to disable the default authentication context
-      config.disableRequestedAuthnContext = options.disableRequestedAuthnContext;
 
+	  //Add our extra passportSamlOptions into our config object
+	  config = self.addPassportSamlOptions(config);
+	  
       var strategy = new passportSaml.Strategy(
         config,
         self.profileCallback
@@ -87,6 +88,20 @@ module.exports = {
         return '/auth/saml/login/callback';
       }
     };
+	
+	self.addPassportSamlOptions = function(config) {
+	  //merge the base configuration options into the passportSamlOptionsObject
+	  //Note: if you have the same attribute in both objects, the base configuration option will overwrite the passportSamlOptions attribute	  {
+	  for(var attr in options.passportSamlOptions){
+		  if(attr in config){
+			  continue; //Do not overwrite existing config attributes.
+		  }
+		  config[attr]=options.passportSamlOptions[attr]; //copy the optional attribute into our config object
+	  }  
+	  
+	  return config;
+	  
+	};
 
     self.addRoutes = function() {
       self.apos.app.get(self.getLoginPath(),
