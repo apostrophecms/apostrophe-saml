@@ -50,7 +50,9 @@ module.exports = {
       // passport-saml uses entryPoint, not identityProviderUrl
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
-
+      //Add our extra passportSamlOptions into our config object
+      config = self.addPassportSamlOptions(config);
+	  
       var strategy = new passportSaml.Strategy(
         config,
         self.profileCallback
@@ -84,6 +86,12 @@ module.exports = {
       } else {
         return '/auth/saml/login/callback';
       }
+    };
+	
+    self.addPassportSamlOptions = function(config) {
+      //merge the base configuration options into the passportSamlOptionsObject
+      //Note: if you have the same attribute in both objects, the base configuration option will overwrite the passportSamlOptions attribute	  {
+      return Object.assign({}, options.passportSamlOptions, config);
     };
 
     self.addRoutes = function() {

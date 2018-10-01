@@ -47,6 +47,20 @@ npm install apostrophe-saml
       // your identity provider may result in mysterious failed logins.
       // Make sure they are on board with what this URL has been set to
       callbackUrl: 'https://example.com/auth/saml/login/callback'
+      //
+      // OPTIONAL: Extra passport-saml options
+      // Configuring saml in your environment can be tricky, and most
+      // environments have unique aspects to them that aren't handled
+      // directly by this wrapper. To help with this problem, you can
+      // pass extra passport-saml options through the following object.
+      // More details about available options can be found here:
+      // https://github.com/bergie/passport-saml#config-parameter-details
+      //
+      //  passportSamlOptions: {
+      //    disableRequestedAuthnContext: true,
+      //    logoutUrl: 'https://examples.com/auth/saml/SLO',
+      //    forceAuthn: true 
+      //  }
     },
     'apostrophe-login': {
       // OPTIONAL: disable regular site logins completely
