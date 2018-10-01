@@ -219,6 +219,10 @@ If you have checked all of the above and it still doesn't work, you might need t
 
 ## Changelog
 
+### 2.3.0
+
+`passportSamlOptions` may be passed as an option to the module and will be passed on directly to `passport-saml`.
+
 ### 2.2.1
 
 * Adds option to prevent overrides of Apostrophe database properties once set. See "Disabling field updates" docs section for more.
