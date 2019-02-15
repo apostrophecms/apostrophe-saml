@@ -219,6 +219,12 @@ If you have checked all of the above and it still doesn't work, you might need t
 
 ## Changelog
 
+### 2.3.1
+
+The `passport-saml-metadata` dependency has been pinned to the `1.4.x` series to address a
+problem seen when logging into Shibboleth identity providers with `passport-saml-metadata` 1.6.x.
+We are reporting this issue upstream.
+
 ### 2.3.0
 
 `passportSamlOptions` may be passed as an option to the module and will be passed on directly to `passport-saml`.
