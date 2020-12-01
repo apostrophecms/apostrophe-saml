@@ -101,7 +101,7 @@ module.exports = {
           // a stale cache error from the IDP, do everything
           // possible to prevent this
           res.setHeader('cache-control', 'private, no-store, no-cache, max-age=0');
-          res.setHeader('expires: Wed, 01 Jan 1997 12:00:00 GMT');
+          res.setHeader('expires', 'Wed, 01 Jan 1997 12:00:00 GMT');
           return next();
         },
         self.apos.login.passport.authenticate('saml', { failureRedirect: self.getLoginPath() }),
