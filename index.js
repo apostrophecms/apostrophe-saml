@@ -96,6 +96,14 @@ module.exports = {
 
     self.addRoutes = function() {
       self.apos.app.get(self.getLoginPath(),
+        function(req, res, next) {
+          // Caching of the redirect to the IDP can result in
+          // a stale cache error from the IDP, do everything
+          // possible to prevent this
+          res.setHeader('cache-control', 'private, no-store, no-cache, max-age=0');
+          res.setHeader('expires: Wed, 01 Jan 1997 12:00:00 GMT');
+          return next();
+        },
         self.apos.login.passport.authenticate('saml', { failureRedirect: self.getLoginPath() }),
         function(req, res) {
           res.redirect('/');
