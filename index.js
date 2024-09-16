@@ -1,4 +1,4 @@
-var passportSaml = require('passport-saml');
+var passportSaml = require('@node-saml/passport-saml');
 var fs = require('fs');
 var _ = require('lodash');
 
