@@ -89,9 +89,10 @@ module.exports = {
     };
 	
     self.addPassportSamlOptions = function(config) {
-      //merge the base configuration options into the passportSamlOptionsObject
-      //Note: if you have the same attribute in both objects, the base configuration option will overwrite the passportSamlOptions attribute	  {
-      return Object.assign({}, options.passportSamlOptions, config);
+      // Merge the base configuration options into the passportSamlOptions object.
+      // Overrides in passportSamlOptions always win, as otherwise there is no
+      // point in having the feature.
+      return Object.assign({}, config, options.passportSamlOptions);
     };
 
     self.addRoutes = function() {

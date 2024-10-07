@@ -1,5 +1,12 @@
 ## Changelog
 
+### 3.0.0
+
+**This module is still for Apostrophe 2.x.** The major version change reflects potentially incompatible changes below:
+
+* Upgrade dependencies to `@node-saml/passport-saml` 5.x, which is actively supported. That version and the version of `node-saml` it depends on have some changes in their default behavior, therefore the major version change.
+* Properties of the `passportSamlOptions` option now override even if the default configuration contains those properties, as otherwise the option is of limited usefulness. This is a another reason for the major version change.
+
 ### 2.3.2
 
 For users who have logged in before, caching of the redirect to the IDP can result in a "stale request" error from Shibboleth and possibly other identity providers on future login attempts. Resolved this by issuing appropriate headers to prevent any caching of the 302 redirect.
