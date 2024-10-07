@@ -53,8 +53,12 @@ module.exports = {
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
       //Add our extra passportSamlOptions into our config object
       console.log('calling for config');
-      console.log(self.addPassportSamlOptions.toString());
-      config = self.addPassportSamlOptions(config);
+      try {
+        config = self.addPassportSamlOptions(config);
+      } catch (e) {
+        console.error(e);
+        process.exit(1);
+      }
       console.log('got config');
 	  
       var strategy = new passportSaml.Strategy(
@@ -99,6 +103,8 @@ module.exports = {
       // point in having the feature.
       const result = Object.assign({}, config, options.passportSamlOptions);
       console.log('end');
+      console.log('option was:', options.passportSamlOptions);
+      console.log('config is:', result);
       return result;
     };
 
