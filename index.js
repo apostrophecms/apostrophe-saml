@@ -8,6 +8,7 @@ module.exports = {
   // the parent class sees them
 
   afterConstruct: function(self, callback) {
+    console.log('** in afterConstruct');
     self.enablePassportStrategy();
     self.generateMetadata();
     self.addRoutes();
@@ -51,7 +52,10 @@ module.exports = {
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
       //Add our extra passportSamlOptions into our config object
+      console.log('calling for config');
+      console.log(self.addPassportSamlOptions.toString());
       config = self.addPassportSamlOptions(config);
+      console.log('got config');
 	  
       var strategy = new passportSaml.Strategy(
         config,
@@ -89,10 +93,13 @@ module.exports = {
     };
 	
     self.addPassportSamlOptions = function(config) {
+      console.log('start');
       // Merge the base configuration options into the passportSamlOptions object.
       // Overrides in passportSamlOptions always win, as otherwise there is no
       // point in having the feature.
-      return Object.assign({}, config, options.passportSamlOptions);
+      const result = Object.assign({}, config, options.passportSamlOptions);
+      console.log('end');
+      return result;
     };
 
     self.addRoutes = function() {
