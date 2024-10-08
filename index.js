@@ -50,7 +50,7 @@ module.exports = {
       // passport-saml uses entryPoint, not identityProviderUrl
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
-      //Add our extra passportSamlOptions into our config object
+      // Add our extra passportSamlOptions into our config object
       try {
         config = self.addPassportSamlOptions(config);
       } catch (e) {
@@ -207,7 +207,6 @@ module.exports = {
     // on users as they log in.
 
     self.adjustProfile = function(profile) {
-      console.error('** profile coming in:', profile);
       var finalProfile = {};
       _.each(self.options.attributeMapping, function(val, key) {
         finalProfile[val] = profile[key];
@@ -216,7 +215,6 @@ module.exports = {
       finalProfile.lastName = finalProfile.lastName || finalProfile.username.replace(/@.*$/, '');
       finalProfile.displayName = finalProfile.displayName || finalProfile.username;
       finalProfile.title = finalProfile.title || (finalProfile.firstName + ' ' + finalProfile.lastName).trim();
-      console.error('** final profile:', finalProfile);
       return finalProfile;
     };
     
