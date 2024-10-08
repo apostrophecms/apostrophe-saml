@@ -8,7 +8,6 @@ module.exports = {
   // the parent class sees them
 
   afterConstruct: function(self, callback) {
-    console.log('** in afterConstruct');
     self.enablePassportStrategy();
     self.generateMetadata();
     self.addRoutes();
@@ -52,14 +51,12 @@ module.exports = {
       config.entryPoint = config.identityProviderUrl;  
       config.callbackUrl = options.callbackUrl || (options.apos.options.baseUrl + '/auth/saml/login/callback');
       //Add our extra passportSamlOptions into our config object
-      console.log('calling for config');
       try {
         config = self.addPassportSamlOptions(config);
       } catch (e) {
         console.error(e);
         process.exit(1);
       }
-      console.log('got config');
 	  
       var strategy = new passportSaml.Strategy(
         config,
@@ -97,14 +94,10 @@ module.exports = {
     };
 	
     self.addPassportSamlOptions = function(config) {
-      console.log('start');
       // Merge the base configuration options into the passportSamlOptions object.
       // Overrides in passportSamlOptions always win, as otherwise there is no
       // point in having the feature.
       const result = Object.assign({}, config, options.passportSamlOptions);
-      console.log('end');
-      console.log('option was:', options.passportSamlOptions);
-      console.log('config is:', result);
       return result;
     };
 
@@ -214,6 +207,7 @@ module.exports = {
     // on users as they log in.
 
     self.adjustProfile = function(profile) {
+      console.error('** profile coming in:', profile);
       var finalProfile = {};
       _.each(self.options.attributeMapping, function(val, key) {
         finalProfile[val] = profile[key];
@@ -222,6 +216,7 @@ module.exports = {
       finalProfile.lastName = finalProfile.lastName || finalProfile.username.replace(/@.*$/, '');
       finalProfile.displayName = finalProfile.displayName || finalProfile.username;
       finalProfile.title = finalProfile.title || (finalProfile.firstName + ' ' + finalProfile.lastName).trim();
+      console.error('** final profile:', finalProfile);
       return finalProfile;
     };
     
