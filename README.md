@@ -1,3 +1,7 @@
+# ⛔️ **DEPRECATED** — do not use for new projects
+
+See [our current docs](https://docs.apostrophecms.org/)
+
 ## Purpose
 
 `apostrophe-saml` provides single sign-on with identity providers based on SAML or Shibboleth. Shibboleth is very common in academic environments and is built on top of SAML, which is common in corporate environments.
